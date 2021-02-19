@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1052121338629",
+    "project_id": "indian-farming-simulator-game",
+    "storage_bucket": "indian-farming-simulator-game.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1052121338629:android:c3ac5cd0af12661bf21d6c",
+        "android_client_info": {
+          "package_name": "com.teamgreen.farm_game_app_version"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1052121338629-t0rg8sukgr07b48gq2iq4bdv4gmel4eh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtcSO7etdS9W8x5ds4rWI80dBa1lypD-M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1052121338629-t0rg8sukgr07b48gq2iq4bdv4gmel4eh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
