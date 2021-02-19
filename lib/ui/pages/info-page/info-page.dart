@@ -7,6 +7,9 @@ class InfoPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Info page"),
       ),
+      body: Center(
+        child: Image.asset("assets/img/farmer.png"),
+      ),
     );
   }
 }
