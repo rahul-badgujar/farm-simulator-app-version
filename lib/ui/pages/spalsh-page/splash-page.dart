@@ -1,15 +1,24 @@
+import 'dart:async';
+
 import 'package:farm_game_app_version/services/firebase/auth/auth-helper.dart';
+import 'package:farm_game_app_version/ui/pages/info-page/info-page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class SplashPage extends StatefulWidget {
-  @override
-  _SplashPageState createState() => _SplashPageState();
-}
-
-class _SplashPageState extends State<SplashPage> {
+class SplashPage extends StatelessWidget {
+  final _splashDuration = Duration(seconds: 5);
   @override
   Widget build(BuildContext context) {
+    // Load next screen.
+    Timer(_splashDuration, () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => InfoPage(),
+        ),
+      );
+    });
+
     return Scaffold(
       body: SizedBox(
         width: double.infinity,
