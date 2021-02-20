@@ -1,10 +1,8 @@
 import 'package:farm_game_app_version/services/firebase/auth/auth-helper.dart';
-import 'package:farm_game_app_version/ui/pages/components/wooden-board.dart';
-import 'package:farm_game_app_version/ui/pages/components/wooden-long-button.dart';
+import 'package:farm_game_app_version/ui/components/gui/ui-board-stone.dart';
+import 'package:farm_game_app_version/ui/components/gui/ui-text-button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -72,7 +70,7 @@ class LoginPage extends StatelessWidget {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  WoodenBoard(
+                  UiBoardStone(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: boardChildrens,
@@ -98,7 +96,7 @@ class LoginPage extends StatelessWidget {
           return CircularProgressIndicator();
         }
         final user = snapshot.data;
-        return WoodenLongButton(
+        return UiTextButton(
           onClick: () async {
             if (user == null) {
               await AuthHelper().signInWithGoogle();
