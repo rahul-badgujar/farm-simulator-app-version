@@ -1,6 +1,8 @@
 import 'package:farm_game_app_version/services/firebase/auth/auth-helper.dart';
-import 'package:farm_game_app_version/ui/components/gui/ui-board-stone.dart';
+import 'package:farm_game_app_version/ui/components/gui/ui-board.dart';
+
 import 'package:farm_game_app_version/ui/components/gui/ui-text-button.dart';
+import 'package:farm_game_app_version/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -23,93 +25,102 @@ class LoginPage extends StatelessWidget {
           ),
         ),
         floatingActionButton: buildFAB(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       ),
     );
   }
 
   Widget buildFAB() {
-    return Padding(
-      padding: const EdgeInsets.all(5.0),
-      child: Row(
-        children: [
-          Spacer(),
-          StreamBuilder<User>(
-            stream: AuthHelper().authStateChanges,
-            builder: (context, snapshot) {
-              List boardChildrens = <Widget>[];
-              if (snapshot.hasError) {
-                boardChildrens.add(
-                  Text("Error: ${snapshot.error}"),
-                );
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                boardChildrens.add(
-                  CircularProgressIndicator(),
-                );
-              }
-              final user = snapshot.data;
-              boardChildrens.addAll(<Widget>[
-                CircleAvatar(
-                  backgroundImage: user == null
-                      ? null
-                      : NetworkImage(
-                          AuthHelper().currentUser.photoURL,
-                        ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  user == null ? "Unknown" : "${user.displayName}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                Text(
-                  user == null ? "No Email" : user.email,
-                ),
-              ]);
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  UiBoardStone(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: boardChildrens,
-                    ),
-                  ),
-                  buildSignInSignOutButton(),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildSignInSignOutButton() {
     return StreamBuilder<User>(
       stream: AuthHelper().authStateChanges,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
+          return Text("Error: ${snapshot.error}");
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         }
         final user = snapshot.data;
-        return UiTextButton(
-          onClick: () async {
-            if (user == null) {
-              await AuthHelper().signInWithGoogle();
-            } else {
-              await AuthHelper().signOut();
-            }
-          },
-          child: Text(
-            user == null ? "Google Sign in" : "Google Sign out",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                24,
+                0,
+                0,
+                8,
+              ),
+              child: UiBoard(
+                type: UiBoardType.Parchment,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: user == null
+                          ? null
+                          : NetworkImage(
+                              AuthHelper().currentUser.photoURL,
+                            ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      user == null ? "Unknown" : "${user.displayName}",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      user == null ? "No Email" : user.email,
+                    ),
+                    SizedBox(height: 4),
+                    UiTextButton(
+                      onClick: () async {
+                        if (user == null) {
+                          await AuthHelper().signInWithGoogle();
+                        } else {
+                          await AuthHelper().signOut();
+                        }
+                      },
+                      child: Text(
+                        user == null ? "Google Sign in" : "Google Sign out",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
+            if (user != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  0,
+                  0,
+                  8,
+                  8,
+                ),
+                child: UiTextButton(
+                  scale: UiButtonScale.Big,
+                  onClick: () {},
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    child: Text(
+                      "Continue   >",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 21,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
         );
       },
     );

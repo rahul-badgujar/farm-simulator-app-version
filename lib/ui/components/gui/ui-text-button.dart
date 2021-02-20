@@ -2,8 +2,9 @@ import 'package:farm_game_app_version/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class UiTextButton extends StatelessWidget {
-  static const String mediumScaleAssetPath = "assets/gui/TextBTN_Medium.png";
-  static const String bigScaleAssetPath = "assets/gui/TextBTN_Big.png";
+  static const String mediumScaleAssetPath =
+      "assets/gui/TextBTN_Medium_Pressed.png";
+  static const String bigScaleAssetPath = "assets/gui/TextBTN_Big_Pressed.png";
 
   final VoidCallback onClick;
   final Widget child;
@@ -23,8 +24,8 @@ class UiTextButton extends StatelessWidget {
       onTap: onClick,
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: 21,
-          vertical: 18,
+          horizontal: 8,
+          vertical: 6,
         ),
         decoration: BoxDecoration(
           image: DecorationImage(
