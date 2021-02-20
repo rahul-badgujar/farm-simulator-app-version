@@ -1,7 +1,10 @@
 import 'package:farm_game_app_version/services/firebase/auth/auth-helper.dart';
+import 'package:farm_game_app_version/ui/pages/components/wooden-board.dart';
+import 'package:farm_game_app_version/ui/pages/components/wooden-long-button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -13,51 +16,79 @@ class LoginPage extends StatelessWidget {
           height: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/img/background-1.jpg"),
+              image: AssetImage("assets/img/background-1.png"),
               fit: BoxFit.fill,
             ),
           ),
           child: Column(
-            children: [
-              StreamBuilder<User>(
-                stream: AuthHelper().authStateChanges,
-                builder: (context, snapshot) {
-                  String txt = "No account";
-                  final user = snapshot.data;
-                  if (user != null) txt = user.email;
-                  return Card(
-                    child: Text(txt),
-                  );
-                },
-              ),
-            ],
+            children: [],
           ),
         ),
-        floatingActionButton: GoogleAuthButton(
-          loginCallback: () async {
-            await AuthHelper().signInWithGoogle();
-          },
-          logoutCallback: () async {
-            await AuthHelper().signOut();
-          },
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
+        floatingActionButton: buildFAB(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }
-}
 
-class GoogleAuthButton extends StatelessWidget {
-  final VoidCallback loginCallback;
-  final VoidCallback logoutCallback;
-  GoogleAuthButton({
-    Key key,
-    @required this.loginCallback,
-    @required this.logoutCallback,
-  }) : super(key: key);
+  Widget buildFAB() {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Row(
+        children: [
+          Spacer(),
+          StreamBuilder<User>(
+            stream: AuthHelper().authStateChanges,
+            builder: (context, snapshot) {
+              List boardChildrens = <Widget>[];
+              if (snapshot.hasError) {
+                boardChildrens.add(
+                  Text("Error: ${snapshot.error}"),
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                boardChildrens.add(
+                  CircularProgressIndicator(),
+                );
+              }
+              final user = snapshot.data;
+              boardChildrens.addAll(<Widget>[
+                CircleAvatar(
+                  backgroundImage: user == null
+                      ? null
+                      : NetworkImage(
+                          AuthHelper().currentUser.photoURL,
+                        ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  user == null ? "Unknown" : "${user.displayName}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Text(
+                  user == null ? "No Email" : user.email,
+                ),
+              ]);
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  WoodenBoard(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: boardChildrens,
+                    ),
+                  ),
+                  buildSignInSignOutButton(),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildSignInSignOutButton() {
     return StreamBuilder<User>(
       stream: AuthHelper().authStateChanges,
       builder: (context, snapshot) {
@@ -67,24 +98,18 @@ class GoogleAuthButton extends StatelessWidget {
           return CircularProgressIndicator();
         }
         final user = snapshot.data;
-        return InkWell(
-          onTap: user == null ? loginCallback : logoutCallback,
-          child: Container(
-            padding: EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/img/wooden-button-long.png"),
-                fit: BoxFit.fill,
-              ),
-            ),
-            child: Text(
-              user == null ? "Google Sign In" : "Sign Out",
-              style: GoogleFonts.risque(
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
-              ),
+        return WoodenLongButton(
+          onClick: () async {
+            if (user == null) {
+              await AuthHelper().signInWithGoogle();
+            } else {
+              await AuthHelper().signOut();
+            }
+          },
+          child: Text(
+            user == null ? "Google Sign in" : "Google Sign out",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
             ),
           ),
         );
